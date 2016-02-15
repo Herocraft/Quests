@@ -952,35 +952,39 @@ public class PlayerListener implements Listener, ColorUtil {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent evt) {
 
-    	if (evt.getFrom().getBlock().equals(evt.getTo().getBlock())) {
-    		return;
-    	}
-
-        if (plugin.checkQuester(evt.getPlayer().getUniqueId()) == false) {
-
-            boolean isPlayer = true;
-            if (plugin.citizens != null) {
-                if (CitizensAPI.getNPCRegistry().isNPC(evt.getPlayer())) {
-                    isPlayer = false;
-                }
+    	try {
+            if (evt.getFrom().getBlock().equals(evt.getTo().getBlock())) {
+                return;
             }
 
-            if (isPlayer) {
+            if (plugin.checkQuester(evt.getPlayer().getUniqueId()) == false) {
 
-                Quester quester = plugin.getQuester(evt.getPlayer().getUniqueId());
+                boolean isPlayer = true;
+                if (plugin.citizens != null) {
+                    if (CitizensAPI.getNPCRegistry().isNPC(evt.getPlayer())) {
+                        isPlayer = false;
+                    }
+                }
 
-                for (Quest quest : quester.currentQuests.keySet()) {
+                if (isPlayer) {
 
-                    if (quester.hasObjective(quest, "reachLocation")) {
+                    Quester quester = plugin.getQuester(evt.getPlayer().getUniqueId());
 
-                        quester.reachLocation(quest, evt.getTo());
+                    for (Quest quest : quester.currentQuests.keySet()) {
+
+                        if (quester.hasObjective(quest, "reachLocation")) {
+
+                            quester.reachLocation(quest, evt.getTo());
+
+                        }
 
                     }
 
                 }
 
             }
-
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
 
     }
